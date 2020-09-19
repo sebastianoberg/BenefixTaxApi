@@ -8,6 +8,7 @@ namespace BenefitTaxApi.Infrastructure
         public static Dictionary<int, int> CalculateAmount(int income)
         {
             // TODO: implement support for incomes below 20 000
+            // Still not implemented....
             var incomeSpan = new Dictionary<int, int>();
                     
             var incomeFrom = RoundOffIncomeFrom(income);
