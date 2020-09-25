@@ -1,87 +1,40 @@
 using System;
+using System.IO;
+using System.Text.RegularExpressions;
 using BenefitTaxApi.Models;
 
 namespace BenefitTaxApi.Infrastructure
 {
     public static class TaxCalculationService
     {
-        public static IncomePair CalculateAmount(int income)
+        public static IncomePair GetIncomeInterval(int income)
         {
-            // TODO: implement support for incomes below 20 000
-            var incomeSpan = new IncomePair();
-                    
-            var incomeFrom = RoundOffIncomeFrom(income);
-            var incomeTo = RoundOffIncomeTo(income);
+            var filePath = Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory); ;
+            var combined = Path.Combine(filePath, "Resources/IncomePairs.csv");
 
-            incomeSpan.IncomeBottom = incomeFrom;
-            incomeSpan.IncomeTop = incomeTo;
-
-            return incomeSpan;
-        }
-
-        private static int RoundOffIncomeTo(int income)
-        {
-            var evenOrOdd = GetEvenOrOddDigit(income, 3);
-            var thousands = GetThousands(income);
-            var hundreds = GetHundreds(income);
-
-            switch (evenOrOdd % 2)
+            using (StreamReader reader = new StreamReader(combined))
             {
-                case 0: Console.WriteLine(evenOrOdd + " is even number");
-                    var evenRounding = ((int)Math.Ceiling(hundreds / 100.0)) * 100 + 100;
-                    return Convert.ToInt32(string.Format("{0}{1}", thousands, evenRounding));
- 
-                case 1: Console.WriteLine(evenOrOdd + " is odd number");
-                    var oddRounding = ((int)Math.Ceiling(hundreds / 100.0)) * 100;
-                    return Convert.ToInt32(string.Format("{0}{1}", thousands, oddRounding));
+                string line;
+                int top;
+                int bottom; 
 
-                default:
-                    return 0;
+                Regex CSVParser = new Regex(",(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))");
+
+                while ((line = reader.ReadLine()) != null)
+                {
+                    string[] X = CSVParser.Split(line);
+                    string[] Y = X[0].Split("-");
+
+                    bottom = Convert.ToInt32(Y[0]); 
+                    top = Convert.ToInt32(Y[1]);
+
+                    if (income >= bottom && income <= top)
+                    {
+                        return new IncomePair(top, bottom);
+                    }
+                }
+                return null;
             }
         }
-
-        private static int RoundOffIncomeFrom(int income)
-        {
-            var evenOrOdd = GetEvenOrOddDigit(income, 3);
-            var thousands = GetThousands(income);
-            var hundreds = GetHundreds(income);
-
-            switch (evenOrOdd % 2)
-            {
-                case 0: Console.WriteLine(evenOrOdd + " is even number");
-                    var evenRounding = ((int)Math.Floor(hundreds / 100.0)) * 100 + 1;
-                    return Convert.ToInt32(string.Format("{0}{1}", thousands, evenRounding));
- 
-                case 1: Console.WriteLine(evenOrOdd + " is odd number");
-                    var oddRounding = ((int)Math.Floor(hundreds / 100.0)) * 100 - 100 + 1;
-                    return Convert.ToInt32(string.Format("{0}{1}", thousands, oddRounding));
- 
-
-                default:
-                    return 0;
-            }
-        }
-
-        private static int GetThousands(int income)
-        {
-            var thousands = income.ToString().Substring(0,2);
-            return int.Parse(thousands);
-        }
-
-        private static int GetHundreds(int income)
-        {
-            var digit = Convert.ToString(income);
-            var hundreds = income.ToString().Substring(digit.Length - 2);
-
-            return int.Parse(hundreds);
-        }
-
-        private static int GetEvenOrOddDigit(int number, int digit)
-	    {
-		    for (var i = 0; i < digit - 1; i++)
-			    number /= 10;
-                
-		    return number % 10;
-	    }
     }
 }

@@ -15,20 +15,18 @@ namespace BenefitTaxApi.Infrastructure
             var taxtable = await _taxOfficeClient.GetTaxTable(benefitTaxRequest.Municipality, benefitTaxRequest.ChurchMember);
 
             // Get income from and to
-            var incomePair = TaxCalculationService.CalculateAmount(benefitTaxRequest.Income);
+            var incomePairNoBenefit = TaxCalculationService.GetIncomeInterval(benefitTaxRequest.Income);
+            var incomePairWithBenefit = TaxCalculationService.GetIncomeInterval(benefitTaxRequest.Income + benefitTaxRequest.BenefitTax);
 
             // Calculate tax to deduct
-            var deductTax = await _taxOfficeClient.GetTaxToDeduct(
-                taxtable,
-                "30",
-                incomePair.IncomeTop,
-                2020,
-                incomePair.IncomeBottom
-                );
+            var taxToDeductNoBenefit = await _taxOfficeClient.GetTaxToDeduct(taxtable, "30B", incomePairNoBenefit.IncomeTop, 2020, incomePairNoBenefit.IncomeBottom);
+            var taxToDeductWithBenefit = await _taxOfficeClient.GetTaxToDeduct(taxtable, "30B", incomePairWithBenefit.IncomeTop, 2020, incomePairWithBenefit.IncomeBottom);
 
-            var netcost = benefitTaxRequest.Income - deductTax;
+            var netIncomeNoBeneFit = benefitTaxRequest.Income - taxToDeductNoBenefit;
+            var netIncomeWithBenefit = benefitTaxRequest.Income - taxToDeductWithBenefit;
+            
             // Return net cost
-            return new TaxResponse(netcost);
+            return new TaxResponse(netIncomeNoBeneFit - netIncomeWithBenefit);
         }
     }
 }

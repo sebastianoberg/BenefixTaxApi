@@ -5,14 +5,13 @@ namespace BenefitTaxApi.Models.Responses
 {
     public class DeductTaxResponse
     {
-        public DeductTaxResponse(double resultCount, double offset, double limit, List<Results> incomeResults)
+        public DeductTaxResponse(double resultCount, double offset, double limit, List<Results> results)
         {
             ResultCount = resultCount;
             Offset = offset;
             Limit = limit;
-            IncomeResults = incomeResults;
+            Results = results;
         }
-
 
         /// <summary>
         /// resultCount
@@ -35,8 +34,8 @@ namespace BenefitTaxApi.Models.Responses
         /// <summary>
         /// Skatteresultat
         /// </summary>
-        [JsonProperty("incomeResults")]
-        public List<Results> IncomeResults { get; set; }
+        [JsonProperty("results")]
+        public List<Results> Results { get; set; }
     }
 
     public class Results
@@ -55,7 +54,6 @@ namespace BenefitTaxApi.Models.Responses
             IncomeMinimum = incomeMinimum;
             ColumnOne = columnOne;
         }
-
 
         /// <summary>
         /// Kolum 2

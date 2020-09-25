@@ -38,7 +38,7 @@ namespace BenefitTaxApi.Infrastructure.Clients
 
         public async Task<int> GetTaxToDeductFromTaxAgency(int tablenr, string numberOfdays, int incomeTo, int incomeYear, int IncomeFrom)
         {
-            var baseUrl = $"https://skatteverket.entryscape.net/rowstore/dataset/88320397-5c32-4c16-ae79-d36d95b17b95?tabellnr={tablenr}&antal dgr={numberOfdays}&inkomst t.o.m.={incomeTo}&år={incomeYear}&inkomst fr.o.m.={IncomeFrom}";
+            var baseUrl = $"https://skatteverket.entryscape.net/rowstore/dataset/88320397-5c32-4c16-ae79-d36d95b17b95?tabellnr={tablenr}&antal%20dgr={numberOfdays}&inkomst%20t.o.m.={incomeTo}&%C3%A5r={incomeYear}&inkomst%20fr.o.m.={IncomeFrom}&_limit=100&_offset=0";
 
             var client = new RestClient(baseUrl);
             var request = new RestRequest(Method.GET);
@@ -47,7 +47,7 @@ namespace BenefitTaxApi.Infrastructure.Clients
             IRestResponse response = client.Execute(request);
 
             var taxToDeduct = await Task.FromResult(JsonConvert.DeserializeObject<DeductTaxResponse>(response.Content));
-            return taxToDeduct.IncomeResults[0].ColumnOne;
+            return taxToDeduct.Results[0].ColumnOne; 
         }
     }
 }
