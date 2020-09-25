@@ -21,7 +21,7 @@ namespace BenefitTaxApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddScoped<ITaxOfficeClient, TaxOfficeClient>();
+            services.AddScoped<ITaxAgencyClient, TaxAgencyClient>();
 
         }
 

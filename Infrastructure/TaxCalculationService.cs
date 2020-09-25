@@ -1,19 +1,20 @@
 using System;
-using System.Collections.Generic;
+using BenefitTaxApi.Models;
 
 namespace BenefitTaxApi.Infrastructure
 {
     public static class TaxCalculationService
     {
-        public static Dictionary<int, int> CalculateAmount(int income)
+        public static IncomePair CalculateAmount(int income)
         {
             // TODO: implement support for incomes below 20 000
-            var incomeSpan = new Dictionary<int, int>();
+            var incomeSpan = new IncomePair();
                     
             var incomeFrom = RoundOffIncomeFrom(income);
             var incomeTo = RoundOffIncomeTo(income);
 
-            incomeSpan.Add(incomeFrom, incomeTo);
+            incomeSpan.IncomeBottom = incomeFrom;
+            incomeSpan.IncomeTop = incomeTo;
 
             return incomeSpan;
         }
@@ -69,7 +70,7 @@ namespace BenefitTaxApi.Infrastructure
 
         private static int GetHundreds(int income)
         {
-            var digit = Convert.ToString(1234);
+            var digit = Convert.ToString(income);
             var hundreds = income.ToString().Substring(digit.Length - 2);
 
             return int.Parse(hundreds);

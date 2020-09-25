@@ -2,7 +2,6 @@ using System.Threading.Tasks;
 using BenefitTaxApi.Infrastructure;
 using BenefitTaxApi.Infrastructure.Interfaces;
 using BenefitTaxApi.Models;
-using BenefitTaxApi.Models.Responses;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BenefitTaxApi.Controllers
@@ -12,45 +11,26 @@ namespace BenefitTaxApi.Controllers
     [ApiController]
     public class TaxBenefitController : ControllerBase
     {
-        private readonly ITaxOfficeClient _taxOfficeClient;
+        private readonly ITaxAgencyClient _taxOfficeClient;
+        private readonly BenefitTaxService _beneFitTaxService = new BenefitTaxService();
 
-        public TaxBenefitController(ITaxOfficeClient taxOfficeClient)
+        public TaxBenefitController(ITaxAgencyClient taxOfficeClient)
         {
             _taxOfficeClient = taxOfficeClient;
         }
 
         [HttpGet]
-        [Route("taxtable")]
-        public async Task<ActionResult<TaxTableResponse>> GetTaxTableAsync(TaxTableRequest taxTableRequest)
+        [Route("benefitTax")]
+        public async Task<ActionResult<TaxResponse>> GetBenefitTaxAsync(BenefitTaxRequest benefitTaxRequest)
         {
-            var congregation = taxTableRequest.Congregation;
-            var churchMemeber = taxTableRequest.ChurchMemeber;
-
-            var taxtable = await _taxOfficeClient.GetTaxTableFromTaxOffice(congregation, churchMemeber);
-
-            if (taxtable == null)
+            if (benefitTaxRequest is null)
             {
-                return NotFound();
+                throw new System.ArgumentNullException(nameof(benefitTaxRequest));
             }
 
-            return taxtable;
-        }
+            var benefitTaxSummary = await _beneFitTaxService.CalculateNetCost(benefitTaxRequest);
 
-        [HttpGet]
-        [Route("taxdeduct")]
-        public async Task<ActionResult<DeductTaxResponse>> GetTaxToDeductAsync(DeductTaxRequest deductTaxRequest)
-        {
-            var deductTax = await _taxOfficeClient.GetFromTaxOffice(
-                deductTaxRequest.tablenr,
-                deductTaxRequest.numberOfdays,
-                deductTaxRequest.incomeTo,
-                deductTaxRequest.incomeYear,
-                deductTaxRequest.IncomeFrom
-                );
-
-            var test = TaxCalculationService.CalculateAmount(25221);
-            
-            return deductTax;
+            return benefitTaxSummary;;
         }
     }
 }

@@ -1,9 +1,19 @@
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace BenefitTaxApi.Models.Responses
 {
     public class DeductTaxResponse
     {
+        public DeductTaxResponse(double resultCount, double offset, double limit, List<Results> incomeResults)
+        {
+            ResultCount = resultCount;
+            Offset = offset;
+            Limit = limit;
+            IncomeResults = incomeResults;
+        }
+
+
         /// <summary>
         /// resultCount
         /// </summary>
@@ -25,12 +35,28 @@ namespace BenefitTaxApi.Models.Responses
         /// <summary>
         /// Skatteresultat
         /// </summary>
-        [JsonProperty("results")]
-        public Results[] Results { get; set; }
+        [JsonProperty("incomeResults")]
+        public List<Results> IncomeResults { get; set; }
     }
 
     public class Results
     {
+        public Results(int columnTwo, int columnThree, int columnFour, int columnFive, int columnSix, string tabellnr, string numberOfDAys, int incomeMax, int year, int incomeMinimum, int columnOne)
+        {
+            ColumnTwo = columnTwo;
+            ColumnThree = columnThree;
+            ColumnFour = columnFour;
+            ColumnFive = columnFive;
+            ColumnSix = columnSix;
+            Tabellnr = tabellnr;
+            NumberOfDAys = numberOfDAys;
+            IncomeMax = incomeMax;
+            Year = year;
+            IncomeMinimum = incomeMinimum;
+            ColumnOne = columnOne;
+        }
+
+
         /// <summary>
         /// Kolum 2
         /// </summary>
