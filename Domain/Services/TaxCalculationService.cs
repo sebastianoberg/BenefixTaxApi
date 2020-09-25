@@ -3,11 +3,11 @@ using System.IO;
 using System.Text.RegularExpressions;
 using BenefitTaxApi.Models;
 
-namespace BenefitTaxApi.Infrastructure
+namespace BenefitTaxApi.Domain.Services
 {
-    public static class TaxCalculationService
+    public class TaxCalculationService : ITaxCalculationService
     {
-        public static IncomePair GetIncomeInterval(int income)
+        public IncomePair GetIncomeInterval(int income)
         {
             var filePath = Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory); ;
             var combined = Path.Combine(filePath, "Resources/IncomePairs.csv");

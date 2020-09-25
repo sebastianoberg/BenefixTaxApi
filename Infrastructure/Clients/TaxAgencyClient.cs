@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
+using BenefitTaxApi.API.Contracts;
 using BenefitTaxApi.Infrastructure.Interfaces;
-using BenefitTaxApi.Models.Responses;
 using Newtonsoft.Json;
 using RestSharp;
 
@@ -8,10 +8,6 @@ namespace BenefitTaxApi.Infrastructure.Clients
 {
     public class TaxAgencyClient : ITaxAgencyClient
     {
-        public TaxAgencyClient()
-        {
-        }
-
         public async Task<int> GetTaxTable(string municipality, bool churchMemeber)
         {
             return await GetTaxTableFromTaxOffice(municipality, churchMemeber);

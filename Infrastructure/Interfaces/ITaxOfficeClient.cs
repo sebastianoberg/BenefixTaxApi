@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using BenefitTaxApi.Models.Responses;
 
 namespace BenefitTaxApi.Infrastructure.Interfaces
 {

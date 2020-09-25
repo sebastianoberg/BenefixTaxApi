@@ -1,4 +1,4 @@
-namespace BenefitTaxApi.Models
+namespace BenefitTaxApi.API.Contracts
 {
     public class DeductTaxRequest
     {

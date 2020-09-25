@@ -1,13 +1,15 @@
 using System.Threading.Tasks;
+using BenefitTaxApi.API.Contracts;
 using BenefitTaxApi.Infrastructure.Clients;
 using BenefitTaxApi.Infrastructure.Interfaces;
-using BenefitTaxApi.Models;
 
-namespace BenefitTaxApi.Infrastructure
+namespace BenefitTaxApi.Domain.Services
 {
-    public class BenefitTaxService
+    public class BenefitTaxService : IBenefitTaxService
     {
         private readonly ITaxAgencyClient _taxOfficeClient = new TaxAgencyClient();
+        private readonly ITaxCalculationService _taxCalculationService = new TaxCalculationService();
+
 
         public async Task<TaxResponse> CalculateNetCost(BenefitTaxRequest benefitTaxRequest) 
         {
@@ -15,8 +17,8 @@ namespace BenefitTaxApi.Infrastructure
             var taxtable = await _taxOfficeClient.GetTaxTable(benefitTaxRequest.Municipality, benefitTaxRequest.ChurchMember);
 
             // Get income from and to
-            var incomePairNoBenefit = TaxCalculationService.GetIncomeInterval(benefitTaxRequest.Income);
-            var incomePairWithBenefit = TaxCalculationService.GetIncomeInterval(benefitTaxRequest.Income + benefitTaxRequest.BenefitTax);
+            var incomePairNoBenefit = _taxCalculationService.GetIncomeInterval(benefitTaxRequest.Income);
+            var incomePairWithBenefit = _taxCalculationService.GetIncomeInterval(benefitTaxRequest.Income + benefitTaxRequest.BenefitTax);
 
             // Calculate tax to deduct
             var taxToDeductNoBenefit = await _taxOfficeClient.GetTaxToDeduct(taxtable, "30B", incomePairNoBenefit.IncomeTop, 2020, incomePairNoBenefit.IncomeBottom);

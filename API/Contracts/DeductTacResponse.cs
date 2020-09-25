@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace BenefitTaxApi.Models.Responses
+namespace BenefitTaxApi.API.Contracts
 {
     public class DeductTaxResponse
     {

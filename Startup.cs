@@ -1,3 +1,5 @@
+using BenefitTaxApi.Domain;
+using BenefitTaxApi.Domain.Services;
 using BenefitTaxApi.Infrastructure.Clients;
 using BenefitTaxApi.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -22,7 +24,7 @@ namespace BenefitTaxApi
         {
             services.AddControllers();
             services.AddScoped<ITaxAgencyClient, TaxAgencyClient>();
-
+            services.AddScoped<IBenefitTaxService, BenefitTaxService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

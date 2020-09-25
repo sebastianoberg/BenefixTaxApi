@@ -1,10 +1,10 @@
 using System.Threading.Tasks;
-using BenefitTaxApi.Infrastructure;
+using BenefitTaxApi.API.Contracts;
+using BenefitTaxApi.Domain;
 using BenefitTaxApi.Infrastructure.Interfaces;
-using BenefitTaxApi.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BenefitTaxApi.Controllers
+namespace BenefitTaxApi.API.Controllers
 {
     [Produces("application/json")]
     [Route("api/")]
@@ -12,11 +12,12 @@ namespace BenefitTaxApi.Controllers
     public class TaxBenefitController : ControllerBase
     {
         private readonly ITaxAgencyClient _taxOfficeClient;
-        private readonly BenefitTaxService _beneFitTaxService = new BenefitTaxService();
+        private readonly IBenefitTaxService _beneFitTaxService;
 
-        public TaxBenefitController(ITaxAgencyClient taxOfficeClient)
+        public TaxBenefitController(ITaxAgencyClient taxOfficeClient, IBenefitTaxService benefitTaxService)
         {
             _taxOfficeClient = taxOfficeClient;
+            _beneFitTaxService = benefitTaxService;
         }
 
         [HttpGet]
