@@ -25,6 +25,8 @@ namespace BenefitTaxApi
             services.AddControllers();
             services.AddScoped<ITaxAgencyClient, TaxAgencyClient>();
             services.AddScoped<IBenefitTaxService, BenefitTaxService>();
+            
+            services.AddSingleton<ITaxCalculationService, TaxCalculationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

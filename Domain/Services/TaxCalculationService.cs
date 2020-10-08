@@ -10,9 +10,9 @@ namespace BenefitTaxApi.Domain.Services
         public IncomePair GetIncomeInterval(int income)
         {
             var filePath = Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory); ;
-            var combined = Path.Combine(filePath, "Resources/IncomePairs.csv");
+            var incomeBelowLimit = Path.Combine(filePath, "Resources/IncomePairs.csv");
 
-            using (StreamReader reader = new StreamReader(combined))
+            using (StreamReader reader = new StreamReader(incomeBelowLimit))
             {
                 string line;
                 int top;
@@ -34,6 +34,8 @@ namespace BenefitTaxApi.Domain.Services
                     }
                 }
                 return null;
+
+                // EGB86K
             }
         }
     }

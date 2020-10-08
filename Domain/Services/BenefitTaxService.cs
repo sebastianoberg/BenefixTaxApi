@@ -1,15 +1,19 @@
 using System.Threading.Tasks;
 using BenefitTaxApi.API.Contracts;
-using BenefitTaxApi.Infrastructure.Clients;
 using BenefitTaxApi.Infrastructure.Interfaces;
 
 namespace BenefitTaxApi.Domain.Services
 {
     public class BenefitTaxService : IBenefitTaxService
     {
-        private readonly ITaxAgencyClient _taxOfficeClient = new TaxAgencyClient();
-        private readonly ITaxCalculationService _taxCalculationService = new TaxCalculationService();
+        private readonly ITaxAgencyClient _taxOfficeClient;
+        private readonly ITaxCalculationService _taxCalculationService;
 
+        public BenefitTaxService(ITaxAgencyClient taxOfficeClient, ITaxCalculationService taxCalculationService)
+        {
+            _taxOfficeClient = taxOfficeClient;
+            _taxCalculationService = taxCalculationService;
+        }
 
         public async Task<TaxResponse> CalculateNetCost(BenefitTaxRequest benefitTaxRequest) 
         {
