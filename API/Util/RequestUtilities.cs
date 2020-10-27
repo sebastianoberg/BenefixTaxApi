@@ -1,7 +1,19 @@
+using System.Threading.Tasks;
+using BenefitTaxApi.API.Contracts;
+using BenefitTaxApi.Domain.Exceptions;
+
 namespace BenefitTaxApi.API.Util
 {
-    public class RequestUtilites
+    internal static class RequestUtilites
     {
-        // Validate Request
+        public static async Task<BenefitTaxRequest> ValidateBenefitTaxRequest(BenefitTaxRequest request)
+        {
+            if (request == null)
+            {
+                throw new ValidationException("Request cannot be null", nameof(request));
+            }
+
+            return request;
+        }
     }
 }

@@ -7,10 +7,9 @@ namespace BenefitTaxApi.API.Contracts
             NetCost = netCost;
         }
 
-
         /// <summary>
         /// Nettokostnad för bilförmån
         /// </summary>
-        public int NetCost { get; set;}
+        public int NetCost { get; set; }
     }
 }

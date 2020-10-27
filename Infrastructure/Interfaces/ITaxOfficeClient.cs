@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using BenefitTaxApi.API.Contracts;
 
 namespace BenefitTaxApi.Infrastructure.Interfaces
 {
@@ -7,5 +8,7 @@ namespace BenefitTaxApi.Infrastructure.Interfaces
         public Task<int> GetTaxTable(string municipality, bool churchMemeber);
 
         public Task<int> GetTaxToDeduct(int tablenr, string numberOfdays, int incomeTo, int incomeYear, int IncomeFrom);
+
+        public Task<MunicipalitiesResponse> GetAllMunicipalities();
     }
 }

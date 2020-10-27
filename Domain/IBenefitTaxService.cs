@@ -6,5 +6,7 @@ namespace BenefitTaxApi.Domain
     public interface IBenefitTaxService
     {
         public Task<TaxResponse> CalculateNetCost(BenefitTaxRequest benefitTaxRequest);
+
+        public Task<MunicipalitiesResponse> GetMunicipalities(MunicipalitiesRequest municipalitiesRequest);
     }
 }

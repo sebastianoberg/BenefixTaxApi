@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using BenefitTaxApi.API.Contracts;
+using BenefitTaxApi.API.Util;
 using BenefitTaxApi.Domain;
 using BenefitTaxApi.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -22,16 +23,41 @@ namespace BenefitTaxApi.API.Controllers
 
         [HttpGet]
         [Route("benefitTax")]
-        public async Task<ActionResult<TaxResponse>> GetBenefitTaxAsync(BenefitTaxRequest benefitTaxRequest)
+        public async Task<ActionResult<TaxResponse>> GetBenefitTaxAsync(BenefitTaxRequest request)
         {
-            if (benefitTaxRequest is null)
+            await RequestUtilites.ValidateBenefitTaxRequest(request);
+
+            var benefitTaxSummary = await _beneFitTaxService.CalculateNetCost(request);
+
+            return benefitTaxSummary; ;
+        }
+
+        [HttpGet]
+        [Route("municipalities")]
+        public async Task<ActionResult<MunicipalitiesResponse>> GetMunicipalitiesAsync(MunicipalitiesRequest municipalitiesRequest)
+        {
+            if (municipalitiesRequest is null)
             {
-                throw new System.ArgumentNullException(nameof(benefitTaxRequest));
+                throw new System.ArgumentNullException(nameof(municipalitiesRequest));
             }
 
-            var benefitTaxSummary = await _beneFitTaxService.CalculateNetCost(benefitTaxRequest);
+            var municipalities = await _beneFitTaxService.GetMunicipalities(municipalitiesRequest);
 
-            return benefitTaxSummary;;
+            return municipalities; ;
         }
+
+        /*         [HttpGet]
+                [Route("municipalities")]
+                public async Task<ActionResult<TaxResponse>> GetCongregationsAsync(CongregationsRequest congregationsRequest)
+                {
+                    if (congregationsRequest is null)
+                    {
+                        throw new System.ArgumentNullException(nameof(congregationsRequest));
+                    }
+
+                    var congregations = await _beneFitTaxService.GetCongregations(congregationsRequest);
+
+                    return congregations;;
+                } */
     }
 }

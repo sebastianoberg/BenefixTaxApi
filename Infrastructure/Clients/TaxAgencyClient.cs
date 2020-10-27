@@ -18,6 +18,11 @@ namespace BenefitTaxApi.Infrastructure.Clients
             return await GetTaxToDeductFromTaxAgency(tablenr, numberOfdays, incomeTo, incomeYear, IncomeFrom);
         }
 
+        public async Task<MunicipalitiesResponse> GetAllMunicipalities()
+        {
+            return await GetMunicipalities();
+        }
+
         public async Task<int> GetTaxTableFromTaxOffice(string municipality, bool churchMemeber)
         {
             var baseUrl = $"https://www.skatteverket.se/st-api/rest/v1/skattetabell?forsamling=&inkomstar=2020&kommun={municipality}&medlemsvkyrkan={churchMemeber}";
@@ -43,7 +48,21 @@ namespace BenefitTaxApi.Infrastructure.Clients
             IRestResponse response = client.Execute(request);
 
             var taxToDeduct = await Task.FromResult(JsonConvert.DeserializeObject<DeductTaxResponse>(response.Content));
-            return taxToDeduct.Results[0].ColumnOne; 
+            return taxToDeduct.Results[0].ColumnOne;
+        }
+
+        public async Task<MunicipalitiesResponse> GetMunicipalities()
+        {
+            var baseUrl = $"https://www.skatteverket.se/st-api/rest/v1/kommuner";
+
+            var client = new RestClient(baseUrl);
+            var request = new RestRequest(Method.GET);
+            request.AddHeader("Cookie", "inesssl=1191591305.20480.0000");
+            request.AddParameter("text/plain", "", ParameterType.RequestBody);
+            IRestResponse response = client.Execute(request);
+
+            var municipalities = await Task.FromResult(JsonConvert.DeserializeObject<MunicipalitiesResponse>(response.Content));
+            return municipalities;
         }
     }
 }
