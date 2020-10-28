@@ -1,7 +1,9 @@
+using System.Net;
 using System.Threading.Tasks;
 using BenefitTaxApi.API.Contracts;
 using BenefitTaxApi.API.Util;
 using BenefitTaxApi.Domain;
+using BenefitTaxApi.Domain.Exceptions;
 using BenefitTaxApi.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,13 +25,15 @@ namespace BenefitTaxApi.API.Controllers
 
         [HttpGet]
         [Route("benefitTax")]
-        public async Task<ActionResult<TaxResponse>> GetBenefitTaxAsync(BenefitTaxRequest request)
+        [ProducesResponseType(typeof(TaxResponse), (int)HttpStatusCode.OK)]
+
+        public async Task<ActionResult<TaxResponse>> GetBenefitTaxAsync([FromBody] BenefitTaxRequest request)
         {
             await RequestUtilites.ValidateBenefitTaxRequest(request);
 
             var benefitTaxSummary = await _beneFitTaxService.CalculateNetCost(request);
 
-            return benefitTaxSummary; ;
+            return Ok(new TaxResponse(benefitTaxSummary.NetCost));
         }
 
         [HttpGet]
