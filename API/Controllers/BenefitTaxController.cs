@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using BenefitTaxApi.API.Contracts;
 using BenefitTaxApi.API.Util;
 using BenefitTaxApi.Domain;
-using BenefitTaxApi.Domain.Exceptions;
 using BenefitTaxApi.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,7 +28,7 @@ namespace BenefitTaxApi.API.Controllers
 
         public async Task<ActionResult<TaxResponse>> GetBenefitTaxAsync([FromBody] BenefitTaxRequest request)
         {
-            await RequestUtilites.ValidateBenefitTaxRequest(request);
+            RequestUtilites.ValidateBenefitTaxRequest(request);
 
             var benefitTaxSummary = await _beneFitTaxService.CalculateNetCost(request);
 

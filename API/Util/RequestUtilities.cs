@@ -6,7 +6,7 @@ namespace BenefitTaxApi.API.Util
 {
     internal static class RequestUtilites
     {
-        public static async Task<BenefitTaxRequest> ValidateBenefitTaxRequest(BenefitTaxRequest request)
+        public static BenefitTaxRequest ValidateBenefitTaxRequest(BenefitTaxRequest request)
         {
             if (request == null)
             {
