@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using BenefitTaxApi.API.Contracts;
@@ -23,12 +24,15 @@ namespace BenefitTaxApi.API.Controllers
         }
 
         [HttpGet]
-        [Route("benefitTax")]
+        [Route("calculateBenefitTaxNetCost")]
         [ProducesResponseType(typeof(TaxResponse), (int)HttpStatusCode.OK)]
 
         public async Task<ActionResult<TaxResponse>> GetBenefitTaxAsync([FromBody] BenefitTaxRequest request)
         {
-            RequestUtilites.ValidateBenefitTaxRequest(request);
+            RequestUtilites.ValidatebenfitTaxRequest(request);
+
+            // Validate Church Member
+            // If true Validate Congregation
 
             var benefitTaxSummary = await _beneFitTaxService.CalculateNetCost(request);
 
@@ -37,30 +41,25 @@ namespace BenefitTaxApi.API.Controllers
 
         [HttpGet]
         [Route("municipalities")]
-        public async Task<ActionResult<MunicipalitiesResponse>> GetMunicipalitiesAsync(MunicipalitiesRequest municipalitiesRequest)
+        public async Task<ActionResult<MunicipalitiesResponse>> GetMunicipalitiesAsync(MunicipalitiesRequest request)
         {
-            if (municipalitiesRequest is null)
-            {
-                throw new System.ArgumentNullException(nameof(municipalitiesRequest));
-            }
+            RequestUtilites.ValidateMunicipalitiesRequest(request);
 
-            var municipalities = await _beneFitTaxService.GetMunicipalities(municipalitiesRequest);
+            var municipalities = await _beneFitTaxService.GetMunicipalities(request);
 
             return municipalities; ;
         }
 
-        /*         [HttpGet]
-                [Route("municipalities")]
-                public async Task<ActionResult<TaxResponse>> GetCongregationsAsync(CongregationsRequest congregationsRequest)
-                {
-                    if (congregationsRequest is null)
-                    {
-                        throw new System.ArgumentNullException(nameof(congregationsRequest));
-                    }
+        [HttpGet]
+        [Route("congregations")]
+        public async Task<ActionResult<List<string>>> GetCongregationsAsync(CongregationsRequest request)
+        {
+            var validatedIncomeYear = await RequestUtilites.ValidateIncomeYear(request);
+            var validatedMunicipality = await RequestUtilites.ValidateMunicipality(_taxOfficeClient, request);
 
-                    var congregations = await _beneFitTaxService.GetCongregations(congregationsRequest);
+            var congregations = await _taxOfficeClient.GetAllCongregations(validatedIncomeYear, validatedMunicipality);
 
-                    return congregations;;
-                } */
+            return congregations;
+        }
     }
 }

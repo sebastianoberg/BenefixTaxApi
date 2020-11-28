@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using BenefitTaxApi.API.Contracts;
 using BenefitTaxApi.Infrastructure.Interfaces;
@@ -21,6 +22,11 @@ namespace BenefitTaxApi.Infrastructure.Clients
         public async Task<MunicipalitiesResponse> GetAllMunicipalities()
         {
             return await GetMunicipalities();
+        }
+
+        public async Task<List<string>> GetAllCongregations(int incomeYear, string municipality)
+        {
+            return await GetCongregations(incomeYear, municipality);
         }
 
         public async Task<int> GetTaxTableFromTaxOffice(string municipality, bool churchMemeber)
@@ -62,7 +68,22 @@ namespace BenefitTaxApi.Infrastructure.Clients
             IRestResponse response = client.Execute(request);
 
             var municipalities = await Task.FromResult(JsonConvert.DeserializeObject<MunicipalitiesResponse>(response.Content));
+
             return municipalities;
+        }
+
+        public async Task<List<string>> GetCongregations(int incomeYear, string municipality)
+        {
+            var baseUrl = $"https://www.skatteverket.se/st-api/rest/v1/forsamlingar?inkomstar={incomeYear}&kommun={municipality}";
+
+            var client = new RestClient(baseUrl);
+            var request = new RestRequest(Method.GET);
+            request.AddHeader("Cookie", "inesssl=1191591305.20480.0000");
+            request.AddParameter("text/plain", "", ParameterType.RequestBody);
+            IRestResponse response = client.Execute(request);
+
+            var congregations = await Task.FromResult(JsonConvert.DeserializeObject<List<string>>(response.Content));
+            return congregations;
         }
     }
 }
