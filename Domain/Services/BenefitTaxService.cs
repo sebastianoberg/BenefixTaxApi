@@ -20,7 +20,7 @@ namespace BenefitTaxApi.Domain.Services
         public async Task<TaxResponse> CalculateNetCost(BenefitTaxRequest benefitTaxRequest)
         {
             // Get Tax table
-            var taxtable = await _taxOfficeClient.GetTaxTable(benefitTaxRequest.Municipality, benefitTaxRequest.ChurchMember);
+            var taxtable = await _taxOfficeClient.GetTaxTable(benefitTaxRequest.Municipality);
 
             // Get income from and to
             var incomePairNoBenefit = _taxCalculationService.GetIncomeInterval(benefitTaxRequest.Income);

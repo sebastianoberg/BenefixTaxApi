@@ -9,11 +9,17 @@ namespace BenefitTaxApi.API.Util
 {
     internal static class RequestUtilites
     {
-        public static BenefitTaxRequest ValidatebenfitTaxRequest(BenefitTaxRequest request)
+
+        public static async Task<BenefitTaxRequest> ValidatebenfitTaxRequestAsync(ITaxAgencyClient _taxOfficeClient, BenefitTaxRequest request)
         {
             if (request == null)
             {
                 throw new ValidationException("Request cannot be null", nameof(request));
+            }
+
+            if (request.ChurchMember != false)
+            {
+                var validatedCongregation = await ValidateCongregation(_taxOfficeClient, request.Congregation, 2020, request.Municipality);
             }
 
             return request;
@@ -29,35 +35,51 @@ namespace BenefitTaxApi.API.Util
             return request;
         }
 
-        public static async Task<string> ValidateMunicipality(ITaxAgencyClient _taxOfficeClient, CongregationsRequest request)
+        public static async Task<CongregationsRequest> ValidateCongregationsRequest(ITaxAgencyClient _taxOfficeClient, CongregationsRequest request)
         {
             if (request == null)
             {
                 throw new ValidationException("Request cannot be null", nameof(request));
             }
 
+            request.IncomeYear = ValidateIncomeYear(request.IncomeYear);
+            request.Municipality = await RequestUtilites.ValidateMunicipality(_taxOfficeClient, request.Municipality);
+
+            return request;
+        }
+
+        private static async Task<string> ValidateMunicipality(ITaxAgencyClient _taxOfficeClient, string municipality)
+        {
             var municipalities = (await _taxOfficeClient.GetAllMunicipalities());
-            if (!municipalities.Municipality.Contains(request.Municipality))
+
+            if (!municipalities.Municipality.Contains(municipality))
             {
                 throw new ApiException("Municipality not found", HttpStatusCode.NotFound);
             }
 
-            return request.Municipality;
+            return municipality;
         }
 
-        public static async Task<int> ValidateIncomeYear(CongregationsRequest request)
+        private static async Task<string> ValidateCongregation(ITaxAgencyClient _taxOfficeClient, string congregation, int incomeYear, string municipality)
         {
-            if (request == null)
+            var congregations = (await _taxOfficeClient.GetAllCongregations(incomeYear, municipality));
+
+            if (!congregations.Contains(congregation))
             {
-                throw new ValidationException("Request cannot be null", nameof(request));
+                throw new ApiException("Municipality not found", HttpStatusCode.NotFound);
             }
 
-            if (request.IncomeYear != DateTime.Now.Year)
+            return congregation;
+        }
+
+        private static int ValidateIncomeYear(int incomeYear)
+        {
+            if (incomeYear != DateTime.Now.Year)
             {
                 throw new ApiException("Requested year is not the current year", HttpStatusCode.BadRequest);
             }
 
-            return request.IncomeYear;
+            return incomeYear;
         }
     }
 }

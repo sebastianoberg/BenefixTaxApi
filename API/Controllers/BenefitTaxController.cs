@@ -29,10 +29,7 @@ namespace BenefitTaxApi.API.Controllers
 
         public async Task<ActionResult<TaxResponse>> GetBenefitTaxAsync([FromBody] BenefitTaxRequest request)
         {
-            RequestUtilites.ValidatebenfitTaxRequest(request);
-
-            // Validate Church Member
-            // If true Validate Congregation
+            await RequestUtilites.ValidatebenfitTaxRequestAsync(_taxOfficeClient, request);
 
             var benefitTaxSummary = await _beneFitTaxService.CalculateNetCost(request);
 
@@ -54,10 +51,8 @@ namespace BenefitTaxApi.API.Controllers
         [Route("congregations")]
         public async Task<ActionResult<List<string>>> GetCongregationsAsync(CongregationsRequest request)
         {
-            var validatedIncomeYear = await RequestUtilites.ValidateIncomeYear(request);
-            var validatedMunicipality = await RequestUtilites.ValidateMunicipality(_taxOfficeClient, request);
-
-            var congregations = await _taxOfficeClient.GetAllCongregations(validatedIncomeYear, validatedMunicipality);
+            var validRequest = RequestUtilites.ValidateCongregationsRequest(_taxOfficeClient, request);
+            var congregations = await _taxOfficeClient.GetAllCongregations(validRequest.Result.IncomeYear, validRequest.Result.Municipality);
 
             return congregations;
         }

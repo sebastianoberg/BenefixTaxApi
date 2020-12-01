@@ -23,6 +23,12 @@ namespace BenefitTaxApi.API.Contracts
         public int BenefitTax { get; set; }
 
         /// <summary>
+        /// Inkomstår
+        /// </summary>
+        [Required]
+        public int IncomeYear { get; set; }
+
+        /// <summary>
         /// Medlem i kyrkan
         /// </summary>
         [Required]

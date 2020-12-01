@@ -9,9 +9,15 @@ namespace BenefitTaxApi.Infrastructure.Clients
 {
     public class TaxAgencyClient : ITaxAgencyClient
     {
-        public async Task<int> GetTaxTable(string municipality, bool churchMemeber)
+        public async Task<int> GetTaxTable(string municipality)
         {
+            var churchMemeber = false;
             return await GetTaxTableFromTaxOffice(municipality, churchMemeber);
+        }
+
+        public async Task<int> GetChurchMemberTaxTable(string municipality, bool churchMemeber, string congregation)
+        {
+            return await GetChurchMemberTaxTableFromTaxOffice(municipality, churchMemeber, congregation);
         }
 
         public async Task<int> GetTaxToDeduct(int tablenr, string numberOfdays, int incomeTo, int incomeYear, int IncomeFrom)
@@ -32,6 +38,20 @@ namespace BenefitTaxApi.Infrastructure.Clients
         public async Task<int> GetTaxTableFromTaxOffice(string municipality, bool churchMemeber)
         {
             var baseUrl = $"https://www.skatteverket.se/st-api/rest/v1/skattetabell?forsamling=&inkomstar=2020&kommun={municipality}&medlemsvkyrkan={churchMemeber}";
+
+            var client = new RestClient(baseUrl);
+            var request = new RestRequest(Method.GET);
+            request.AddHeader("Cookie", "inesssl=1191591305.20480.0000");
+            request.AddParameter("text/plain", "", ParameterType.RequestBody);
+            IRestResponse response = client.Execute(request);
+
+            var taxTable = await Task.FromResult(JsonConvert.DeserializeObject<TaxTableResponse>(response.Content));
+            return taxTable.TaxTable;
+        }
+
+        public async Task<int> GetChurchMemberTaxTableFromTaxOffice(string municipality, bool churchMemeber, string congregation)
+        {
+            var baseUrl = $"https://www.skatteverket.se/st-api/rest/v1/skattetabell?forsamling={congregation}&inkomstar=2020&kommun={municipality}&medlemsvkyrkan={churchMemeber}";
 
             var client = new RestClient(baseUrl);
             var request = new RestRequest(Method.GET);
