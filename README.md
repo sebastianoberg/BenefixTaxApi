@@ -5,7 +5,7 @@ Api to calculate benefit tax for company owned cars in Sweden.
 
 There are three GET endpoints:
 
-**1. ../calculateBenefitTaxNetCost**
+**1. ..api/calculateBenefitTaxNetCost**
 ### Example BenefitTaxRequest:
 ```
 {    
@@ -17,14 +17,14 @@ There are three GET endpoints:
     "Congregation": ""
 }
 ```
-**2. ../municipalities**
+**2. ..api/municipalities**
 ### Example MunicipalitiesRequest:
 ```
 {
     "incomeYear": 2020
 }
 ```
-**3. ../congregations**
+**3. ..api/congregations**
 ### Example CongregationsRequest:
 ```
 {    
