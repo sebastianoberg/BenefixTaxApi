@@ -12,7 +12,7 @@ namespace BenefitTaxApi.API.Contracts
         /// <summary>
         /// list på kommuner per år
         /// </summary>
-        [JsonProperty("2020")]
+        [JsonProperty("2021")]
         public List<string> Municipality { get; set; }
     }
 
