@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using BenefitTaxApi.API.Contracts;
@@ -45,6 +46,8 @@ namespace BenefitTaxApi.Infrastructure.Clients
             request.AddParameter("text/plain", "", ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
 
+            ValidateHttpResponse(response);
+
             var taxTable = await Task.FromResult(JsonConvert.DeserializeObject<TaxTableResponse>(response.Content));
             return taxTable.TaxTable;
         }
@@ -58,6 +61,8 @@ namespace BenefitTaxApi.Infrastructure.Clients
             request.AddHeader("Cookie", "inesssl=1191591305.20480.0000");
             request.AddParameter("text/plain", "", ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
+
+            ValidateHttpResponse(response);
 
             var taxTable = await Task.FromResult(JsonConvert.DeserializeObject<TaxTableResponse>(response.Content));
             return taxTable.TaxTable;
@@ -73,6 +78,8 @@ namespace BenefitTaxApi.Infrastructure.Clients
             request.AddParameter("text/plain", "", ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
 
+            ValidateHttpResponse(response);
+
             var taxToDeduct = await Task.FromResult(JsonConvert.DeserializeObject<DeductTaxResponse>(response.Content));
             return taxToDeduct.Results[0].ColumnOne;
         }
@@ -86,6 +93,8 @@ namespace BenefitTaxApi.Infrastructure.Clients
             request.AddHeader("Cookie", "inesssl=1191591305.20480.0000");
             request.AddParameter("text/plain", "", ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
+
+            ValidateHttpResponse(response);
 
             var municipalities = await Task.FromResult(JsonConvert.DeserializeObject<MunicipalitiesResponse>(response.Content));
 
@@ -102,8 +111,18 @@ namespace BenefitTaxApi.Infrastructure.Clients
             request.AddParameter("text/plain", "", ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
 
+            ValidateHttpResponse(response);
+
             var congregations = await Task.FromResult(JsonConvert.DeserializeObject<List<string>>(response.Content));
             return congregations;
+        }
+
+        private void ValidateHttpResponse(IRestResponse response)
+        {
+            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                throw new Exception("Unable to get response from Swedish Tax Agency");
+            }
         }
     }
 }
